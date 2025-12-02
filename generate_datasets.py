@@ -20,6 +20,11 @@ PLOT_DIR = "plots"
 
 random.seed(generate_base_datasets.RANDOM_STATE)
 
+def get_imbalance():
+  ratios = np.arange(START, END, STEP)
+  weights = list(map(lambda ratio: 1 / (ratio + 1), ratios))
+  return (ratios, weights)
+
 def generate_datasets():
   # Criando diretorios caso não existam
   if not os.path.exists(DATASETS_DIR):
@@ -28,8 +33,7 @@ def generate_datasets():
   if not os.path.exists(METADATAS_DIR):
     os.mkdir(METADATAS_DIR)
 
-  ratios = np.arange(START, END, STEP)
-  weights = list(map(lambda ratio: 1/(ratio + 1), ratios))
+  ratios, weights = get_imbalance()
 
   # generate datasets
   parameters = generate_base_datasets.generate_parameters()
