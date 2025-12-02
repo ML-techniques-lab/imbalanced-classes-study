@@ -4,3 +4,4 @@ datasets
 metadatas
 plots
 *.png
+.tool-versions
