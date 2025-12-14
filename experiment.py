@@ -1,6 +1,5 @@
 """Imports"""
 # Utils
-from models import Result
 import generate_datasets
 import pandas as pd
 import random
