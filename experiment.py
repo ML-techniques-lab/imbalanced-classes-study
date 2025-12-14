@@ -1,5 +1,6 @@
 """Imports"""
 # Utils
+from models import Result
 import generate_datasets
 import pandas as pd
 import random
@@ -21,12 +22,12 @@ from sklearn.gaussian_process.kernels import RBF
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC, LinearSVC
 from deslib.des.knora_e import KNORAE
 from deslib.dcs import OLA, LCA, MCB
 from sklearn_lvq import GlvqModel
 from xgboost import XGBClassifier
 from deslib.des import KNORAU
-from sklearn.svm import SVC
 
 """Constants"""
 
@@ -42,14 +43,14 @@ SCORES = {
 }
 
 base_model = Perceptron(random_state=RANDOM_STATE)
-pool_classifiers = BaggingClassifier(base_estimator=base_model, n_estimators=100, random_state=RANDOM_STATE, bootstrap=True,
+pool_classifiers = BaggingClassifier(estimator=base_model, n_estimators=100, random_state=RANDOM_STATE, bootstrap=True,
                                      bootstrap_features=False, max_features=1.0, n_jobs=-1)
 MODELS = {
   'KNN': KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
-  'SVM_lin': SVC(kernel='linear', probability=True),
-  'SVM_rbf': SVC(kernel='rbf', probability=True),
-  'GLQV': GlvqModel(prototypes_per_class=1, max_iter=2500, gtol=1e-5, beta=5, random_state=RANDOM_STATE),
-  'LR': LogisticRegression(n_jobs=-1),
+  'SVM_lin': LinearSVC(random_state=RANDOM_STATE),
+  'SVM_rbf': SVC(kernel='rbf', probability=True, random_state=RANDOM_STATE),
+  'GLVQ': GlvqModel(prototypes_per_class=1, max_iter=2500, gtol=1e-5, beta=5, random_state=RANDOM_STATE),
+  'LR': LogisticRegression(n_jobs=-1, random_state=RANDOM_STATE),
   'GNB': GaussianNB(),
   'GP': GaussianProcessClassifier(1.0 * RBF(1.0), random_state=RANDOM_STATE, n_jobs=-1),
   'LDA': LinearDiscriminantAnalysis(),
@@ -58,8 +59,8 @@ MODELS = {
   'MLP': MLPClassifier(activation='relu', solver='adam', alpha=1e-5, hidden_layer_sizes=(5,2), random_state=RANDOM_STATE),
   'Percep': Perceptron(random_state=RANDOM_STATE, n_jobs=-1),
   'XGBoost': XGBClassifier(n_jobs=-1, random_state=RANDOM_STATE),
-  'RF': RandomForestClassifier(random_state=0, n_jobs=-1),
-  'AdaBoost': AdaBoostClassifier(n_estimators=100),
+  'RF': RandomForestClassifier(random_state=RANDOM_STATE, n_jobs=-1),
+  'AdaBoost': AdaBoostClassifier(n_estimators=100, random_state=RANDOM_STATE),
   'Bagging': pool_classifiers,
   'OLA': OLA(pool_classifiers, random_state=RANDOM_STATE),
   'LCA': LCA(pool_classifiers, random_state=RANDOM_STATE),
@@ -81,8 +82,8 @@ if (args[2] == 'all'):
   models = MODELS.keys()
 else:
   models = args[2].split(',')
-if len(args) == 4:
-  outfile = args[3]
+if len(args) == 5:
+  outfile = args[4]
 else:
   outfile = 'results.csv'
 
@@ -102,6 +103,12 @@ for i in range(len(os.listdir(DATASETS_DIR))):
       methods.append(pd.read_csv(f"{path}/{dataset}"))
     levels.append(methods)
   datasets.append(levels)
+
+if (args[3] != 'all'):
+  start,end = args[3].split(':')
+  start = int(start)
+  end = int(end)
+  datasets = datasets[start-1:end]
 
 def calculate_score(y_true, y_pred):
   results = [(name, func(y_true, y_pred)) for name, func in SCORES.items()]
@@ -147,9 +154,9 @@ for model_name in models:
       score_frames = [pd.DataFrame(scores, index=[f"fold {i+1}" for i in range(5)]) for scores in results[model_name][i][w]]
       weight_results = pd.concat(score_frames, axis=1, keys=scaling_methods)
       weights_frames.append(weight_results)
-    dataset_results = pd.concat(weights_frames, axis=1, keys=[f"{weight:.3f}" for weight in weights])
+    dataset_results = pd.concat(weights_frames, axis=1, keys=[f"level {level+1}" for level in range(len(weights))])
     datasets_frames.append(dataset_results)
   model_results = pd.concat(datasets_frames, axis=1, keys=[f"dataset {d+1}" for d in range(len(datasets))])
   models_frames.append(model_results)
 final_result = pd.concat(models_frames, axis=1, keys=models)
-final_result.to_csv(outfile)
+final_result.to_csv(outfile, index=False)
