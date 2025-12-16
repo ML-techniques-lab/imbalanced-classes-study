@@ -86,10 +86,15 @@ if len(args) == 5:
 else:
   outfile = 'results.csv'
 
+if (args[3] != 'all'):
+  start,end = args[3].split(':')
+  start = int(start)
+  end = int(end)
+
 """Load datasets"""
 _, weights = generate_datasets.get_imbalance()
 datasets = []
-for i in range(len(os.listdir(DATASETS_DIR))):
+for i in range(start-1, end):
   base_path = f"{DATASETS_DIR}/dataset_{i+1}"
   levels = []
   for j in range(len(weights)):
@@ -103,11 +108,6 @@ for i in range(len(os.listdir(DATASETS_DIR))):
     levels.append(methods)
   datasets.append(levels)
 
-if (args[3] != 'all'):
-  start,end = args[3].split(':')
-  start = int(start)
-  end = int(end)
-  datasets = datasets[start-1:end]
 
 def calculate_score(y_true, y_pred):
   results = [(name, func(y_true, y_pred)) for name, func in SCORES.items()]
