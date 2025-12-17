@@ -1,3 +1,4 @@
+#!/bin/bash
 step=$((100 / $SLURM_ARRAY_TASK_MAX))
 start=$(( ($SLURM_ARRAY_TASK_ID - 1) * step))
 end=$(( $SLURM_ARRAY_TASK_ID * step ))
