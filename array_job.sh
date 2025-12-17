@@ -6,5 +6,6 @@ end=$(( $SLURM_ARRAY_TASK_ID * step ))
 mod=$(( 100 % $SLURM_ARRAY_TASK_MAX ))
 if [ $mod != 0 ] && [ $SLURM_ARRAY_TASK_ID == $SLURM_ARRAY_TASK_MAX]; then
   end=$(( $end + mod ))
+fi
 
 python experiment.py all ${1} $start:$end "${1}_${step}.csv"
