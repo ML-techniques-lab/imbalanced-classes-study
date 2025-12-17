@@ -16,12 +16,7 @@ models = [
   ('XGBoost', 2),
   ('RF', 3),
   ('AdaBoost', 9),
-  ('Bagging', 17),
-  ('OLA', 17),
-  ('LCA', 17),
-  ('MCB', 17),
-  ('KNORAE', 17),
-  ('KNORAU', 17)
+  ('Bagging,OLA,LCA,MCB,KNORAE,KNORAU', 17)
 ]
 
 for model, division in models:
