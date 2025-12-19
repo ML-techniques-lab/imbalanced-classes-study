@@ -7,16 +7,21 @@ models = [
   ('GLVQ', 5),
   ('LR', 1),
   ('GNB', 1),
-  ('GP', 17),
+  ('GP', 20),
   ('LDA', 1),
   ('QDA', 1),
   ('DT', 1),
-  ('MLP', 3),
+  ('MLP', 5),
   ('Percep', 1),
   ('XGBoost', 2),
-  ('RF', 3),
-  ('AdaBoost', 9),
-  ('Bagging,OLA,LCA,MCB,KNORAE,KNORAU', 17)
+  ('RF', 5),
+  ('AdaBoost', 10),
+  ('Bagging', 5),
+  ('OLA', 5),
+  ('LCA', 5),
+  ('MCB', 4),
+  ('KNORAE', 5),
+  ('KNORAU', 5),
 ]
 
 for model, division in models:
