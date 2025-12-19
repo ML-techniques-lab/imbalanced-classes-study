@@ -90,6 +90,9 @@ if (args[3] != 'all'):
   start,end = args[3].split(':')
   start = int(start)
   end = int(end)
+else:
+  start=1
+  end=100
 
 """Load datasets"""
 _, weights = generate_datasets.get_imbalance()
