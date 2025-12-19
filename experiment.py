@@ -137,6 +137,8 @@ for name, model in MODELS.items():
           X_test = X.iloc[test_index]
           y_train = y.iloc[train_index]
           y_test = y.iloc[test_index]
+          if (name in ['OLA', 'LCA', 'MCB', 'KNORAE', 'KNORAU']):
+            pool_classifiers.fit(X_train, y_train)
           MODELS[name].fit(X_train, y_train)
           model_scores.append(calculate_score(y_test, MODELS[name].predict(X_test)))
         level_results.append(model_scores)
@@ -155,7 +157,7 @@ for model_name in models:
       weights_frames.append(weight_results)
     dataset_results = pd.concat(weights_frames, axis=1, keys=[f"level {level+1}" for level in range(len(weights))])
     datasets_frames.append(dataset_results)
-  model_results = pd.concat(datasets_frames, axis=1, keys=[f"dataset {d+1}" for d in range(len(datasets))])
+  model_results = pd.concat(datasets_frames, axis=1, keys=[f"dataset {d+1}" for d in range(start, end+1)])
   models_frames.append(model_results)
 final_result = pd.concat(models_frames, axis=1, keys=models)
 final_result.to_csv(outfile, index=False)
