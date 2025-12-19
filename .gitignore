@@ -4,3 +4,4 @@ datasets
 plots
 *.png
 .tool-versions
+results*
