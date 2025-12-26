@@ -160,7 +160,7 @@ for model_name in models:
       weights_frames.append(weight_results)
     dataset_results = pd.concat(weights_frames, axis=1, keys=[f"level {level+1}" for level in range(len(weights))])
     datasets_frames.append(dataset_results)
-  model_results = pd.concat(datasets_frames, axis=1, keys=[f"dataset {d+1}" for d in range(start, end+1)])
+  model_results = pd.concat(datasets_frames, axis=1, keys=[f"dataset {d}" for d in range(start, end+1)])
   models_frames.append(model_results)
 final_result = pd.concat(models_frames, axis=1, keys=models)
 final_result.to_csv(outfile, index=False)

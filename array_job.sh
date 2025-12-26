@@ -1,12 +1,7 @@
 #!/bin/bash
 step=$((100 / $SLURM_ARRAY_TASK_MAX))
-start=$(( ($SLURM_ARRAY_TASK_ID - 1) * step))
+start=$(( ((($SLURM_ARRAY_TASK_ID - 1) * step) + 1) ))
 end=$(( $SLURM_ARRAY_TASK_ID * step ))
 
-mod=$(( 100 % $SLURM_ARRAY_TASK_MAX ))
-if [ $mod != 0 ] && [ $SLURM_ARRAY_TASK_ID == $SLURM_ARRAY_TASK_MAX]; then
-  end=$(( $end + mod ))
-fi
-
 source venv/bin/activate
-python experiment.py all ${1} $start:$end "${1}_${step}.csv"
+python experiment.py all ${1} $start:$end "results_2/${1}_${SLURM_ARRAY_TASK_ID}.csv"
