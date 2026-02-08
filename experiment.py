@@ -33,7 +33,7 @@ from deslib.des import KNORAU
 DATASETS_DIR = "scaled_datasets"
 RANDOM_STATE = 10
 N_FOLDS = 5
-SCALING_METHODS = ['original', 'SS', 'MA', 'RS', 'QT', 'PT']
+SCALING_METHODS = ['original', 'SS', 'MA', 'RS', 'QT', 'PT', 'MM']
 SCORES = {
   'accuracy': accuracy_score,
   'f1_score': f1_score,
