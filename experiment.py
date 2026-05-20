@@ -116,15 +116,6 @@ def calculate_score(y_true, y_pred):
   results = [(name, func(y_true, y_pred)) for name, func in SCORES.items()]
   return dict(results)
 
-def calculate_confusion_matrix(y_true, y_pred):
-  matrix = confusion_matrix(y_true, y_pred)
-  return dict([
-    ('true negative', matrix[0,0]),
-    ('false negative', matrix[1, 0]),
-    ('true positive', matrix[1, 1]),
-    ('false positive', matrix[0, 1])
-  ])
-
 """Train models"""
 results = {}
 folds = StratifiedKFold(n_splits=N_FOLDS, random_state=RANDOM_STATE, shuffle=True)
@@ -154,8 +145,6 @@ for name, model in MODELS.items():
           MODELS[name].fit(X_train, y_train)
           preds = MODELS[name].predict(X_test)
           scores = calculate_score(y_test, preds)
-          c_matrix = calculate_confusion_matrix(y_test, preds)
-          scores.update(c_matrix) # type: ignore
           model_scores.append(scores)
         level_results.append(model_scores)
       dataset_results.append(level_results)
