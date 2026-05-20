@@ -20,8 +20,12 @@ PLOT_DIR = "plots"
 
 random.seed(generate_base_datasets.RANDOM_STATE)
 
-def get_imbalance():
-  ratios = np.arange(START, END, STEP)
+def get_imbalance(start=None, end=None, step=None):
+  start = start if start is not None else START
+  end = end if end is not None else END
+  step = step if step is not None else STEP
+
+  ratios = np.arange(start, end, step)
   weights = list(map(lambda ratio: 1 / (ratio + 1), ratios))
   return (ratios, weights)
 
