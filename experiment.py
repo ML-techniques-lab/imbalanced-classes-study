@@ -30,7 +30,7 @@ from deslib.des import KNORAU
 
 """Constants"""
 
-DATASETS_DIR = "scaled_datasets"
+DATASETS_DIR = "scm_scaled_datasets"
 RANDOM_STATE = 10
 N_FOLDS = 5
 SCALING_METHODS = ['original', 'SS', 'MA', 'RS', 'QT', 'PT', 'MM']
@@ -95,7 +95,7 @@ else:
   end=100
 
 """Load datasets"""
-_, weights = generate_datasets.get_imbalance()
+_, weights = generate_datasets.get_imbalance(1, 31, 3.33)
 datasets = []
 for i in range(start-1, end):
   base_path = f"{DATASETS_DIR}/dataset_{i+1}"
@@ -132,8 +132,8 @@ for name, model in MODELS.items():
       level_results = []
       for k in range(len(scaling_methods)):
         dataset = datasets[i][j][k]
-        X = dataset.iloc[:, :-1]
-        y = dataset.iloc[:, -1]
+        X = dataset.drop('y', axis=1)
+        y = dataset['y']
         model_scores = []
         for train_index, test_index in folds.split(X, y):
           X_train = X.iloc[train_index]
